@@ -1,9 +1,26 @@
 interface Env {
-  RESEND_API_KEY: 're_RSsYKZVP_48Q4RkE1218jJTb5a9NyMyeW';
-  CONTACT_RECEIVER_EMAIL?: 'abc441448@gmail.com';
+  RESEND_API_KEY: string;
+  CONTACT_RECEIVER_EMAIL?: string;
 }
 
-export const onRequestPost = async (context: any) => { 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+// Handle browser preflight checks
+export const onRequestOptions = async () => {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+};
+
+export const onRequestPost = async (context: {
+  request: Request;
+  env: Env;
+}) => {
   try {
     const body = (await context.request.json()) as {
       firstName?: string;
@@ -20,22 +37,24 @@ export const onRequestPost = async (context: any) => {
     if (!firstName || !lastName || !email || !message) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
       );
     }
 
-    const recipient = context.env.CONTACT_RECEIVER_EMAIL || "hr@climbpact.com";
+    const recipient = context.env.CONTACT_RECEIVER_EMAIL || "abc441448@gmail.com";
     const typeLabel = enquiryType === "employer" ? "Employer / Business" : "Candidate / Job Seeker";
 
-    // Call Resend REST API securely from serverless backend
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${context.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${context.env.RESEND_API_KEY || "re_RSsYKZVP_48Q4RkE1218jJTb5a9NyMyeW"}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "ClimbPact Inquiries <onboarding@resend.dev>", // Replace with verified domain (e.g. hr@climbpact.com)
+        from: "ClimbPact Inquiries <onboarding@resend.dev>",
         to: [recipient],
         reply_to: email,
         subject: `New ${typeLabel} Inquiry: ${firstName} ${lastName}`,
@@ -63,18 +82,21 @@ export const onRequestPost = async (context: any) => {
     if (!resendResponse.ok) {
       return new Response(JSON.stringify(result), {
         status: resendResponse.status,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     return new Response(JSON.stringify({ success: true, result }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
     return new Response(
       JSON.stringify({ error: err instanceof Error ? err.message : "Internal Server Error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      }
     );
   }
 };
