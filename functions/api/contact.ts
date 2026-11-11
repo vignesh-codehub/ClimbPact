@@ -1,6 +1,6 @@
 interface Env {
   RESEND_API_KEY: 're_RSsYKZVP_48Q4RkE1218jJTb5a9NyMyeW';
-  CONTACT_RECEIVER_EMAIL?: 'kdvicky009@gmail.com';
+  CONTACT_RECEIVER_EMAIL?: 'abc441448@gmail.com';
 }
 
 export const onRequestPost = async (context: any) => { 
