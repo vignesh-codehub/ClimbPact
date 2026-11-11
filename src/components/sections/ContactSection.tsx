@@ -25,13 +25,11 @@ export const ContactSection: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setStatus("idle");
-    setErrorMessage("");
 
     try {
       // 1. Sends data directly to your Cloudflare Pages Function endpoint
@@ -64,7 +62,6 @@ export const ContactSection: React.FC = () => {
       });
     } catch (err) {
       setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setIsLoading(false);
     }

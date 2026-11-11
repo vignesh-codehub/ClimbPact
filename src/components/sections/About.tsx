@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Target, Compass, Users } from "lucide-react";
+import { Compass } from "lucide-react";
 import aboutImg from "../../assets/about.webp";
 
 interface FeatureCard {
