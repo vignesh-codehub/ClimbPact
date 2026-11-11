@@ -1,6 +1,6 @@
 interface Env {
-  RESEND_API_KEY: "re_RSsYKZVP_48Q4RkE1218jJTb5a9NyMyeW";
-  CONTACT_RECEIVER_EMAIL?: "abc441448@gmail.com";
+  RESEND_API_KEY: string;
+  CONTACT_RECEIVER_EMAIL?: string;
 }
 
 const corsHeaders = {
@@ -44,13 +44,13 @@ export const onRequestPost = async (context: {
       );
     }
 
-    const recipient = context.env.CONTACT_RECEIVER_EMAIL || "abc441448@gmail.com";
+    const recipient = context.env.CONTACT_RECEIVER_EMAIL;
     const typeLabel = enquiryType === "employer" ? "Employer / Business" : "Candidate / Job Seeker";
 
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${context.env.RESEND_API_KEY || "re_RSsYKZVP_48Q4RkE1218jJTb5a9NyMyeW"}`,
+        Authorization: `Bearer ${context.env.RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
