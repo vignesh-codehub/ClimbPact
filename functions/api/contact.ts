@@ -1,6 +1,6 @@
 interface Env {
-  RESEND_API_KEY: string;
-  CONTACT_RECEIVER_EMAIL?: string;
+  RESEND_API_KEY: "re_RSsYKZVP_48Q4RkE1218jJTb5a9NyMyeW";
+  CONTACT_RECEIVER_EMAIL?: "abc441448@gmail.com";
 }
 
 const corsHeaders = {
